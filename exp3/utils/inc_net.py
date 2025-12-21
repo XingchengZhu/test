@@ -179,6 +179,17 @@ def get_convnet(args, pretrained=False):
         )
         model.out_dim = model.embed_dim 
         return ViTProxy(model)
+    elif name == "vit_base":
+        # 使用 vit_base_patch16_224 的基础架构 (embed_dim=768, depth=12, num_heads=12)
+        model = timm.create_model(
+            'vit_base_patch16_224',
+            pretrained=pretrained,
+            num_classes=0,
+            img_size=32,
+            patch_size=4 # 32x32 输入下，4x4 patch 效果较稳健
+        )
+        model.out_dim = model.embed_dim 
+        return ViTProxy(model)
     else:
         raise NotImplementedError("Unknown type {}".format(name))
 
