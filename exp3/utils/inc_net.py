@@ -20,6 +20,17 @@ import torch.nn.functional as F
 
 import timm
 
+class ViTProxy(nn.Module):
+    def __init__(self, vit_model):
+        super().__init__()
+        self.vit = vit_model
+        self.out_dim = vit_model.out_dim
+
+    def forward(self, x):
+        # timm 的 ViT 在 num_classes=0 时直接返回特征向量 [B, embed_dim]
+        features = self.vit(x)
+        return {"features": features}
+
 class CombinedCVAE(nn.Module):
     def __init__(self, feature_dim, num_classes, latent_dim=128, hidden_dims=[512, 256], dropout_prob=0.1):
         """
@@ -132,27 +143,25 @@ def get_convnet(args, pretrained=False):
     elif name == "resnet50_cbam":
         return resnet50_cbam(pretrained=pretrained, args=args)
     elif name == "vit_base":
-        # 推荐使用针对 CIFAR 优化的小 Patch 版本
-        # 'vit_tiny_patch2_32' 或 'vit_small_patch2_32' 是处理 32x32 图像的常用选择
         try:
             model = timm.create_model(
-                'vit_tiny_patch2_32', # 专为 32x32 设计，patch 为 2x2
+                'vit_tiny_patch2_32',
                 pretrained=pretrained, 
-                num_classes=100,
-                img_size=32 # 明确指定输入分辨率
+                num_classes=0, # 注意：这里必须设为 0，因为 backbone 只负责提取特征
+                img_size=32
             )
-            model.out_dim = model.embed_dim # 自动获取输出维度（tiny 通常为 192, small 为 384）
+            model.out_dim = model.embed_dim 
         except:
-            # 如果 timm 版本没有预定义该字符串，可以手动修改基础模型
             model = timm.create_model(
                 'vit_base_patch16_224', 
                 pretrained=pretrained, 
-                num_classes=100,
+                num_classes=0, # 同上
                 img_size=32, 
-                patch_size=2 # 将 patch 改小以保留空间信息
+                patch_size=2
             )
             model.out_dim = 768
-        return model
+        
+        return ViTProxy(model)
     else:
         raise NotImplementedError("Unknown type {}".format(name))
 

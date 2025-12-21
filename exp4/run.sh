@@ -5,9 +5,8 @@
 
 python main.py --config=./exps/fcs/cifar100/5/first_stage.json
 
-
 # 定义超参数搜索空间
-alphas=(0.1 1.0 2.0 10.0)
+alphas=(0.1 1.0 2.0 10.0 20.0)
 lambdas=(25 50 75 100)
 kappas=(0.05 0.1 0.2 0.5)
 
@@ -27,20 +26,20 @@ do
             echo "------------------------------------------------"
             echo "正在运行实验: ${EXP_ID}"
             
-            # 使用 Python 脚本动态修改 JSON 并保存为临时文件
+            # 核心修复：Python 代码块必须顶格编写，防止 IndentationError
             python3 -c "
-                import json
-                with open('$BASE_CONFIG', 'r') as f:
-                    data = json.load(f)
-                data['alpha_mix'] = $a
-                data['lambda_mmd_base'] = $l
-                data['kappa'] = $k
-                data['log_name'] = 'exp4_${EXP_ID}'
-                with open('$TMP_CONFIG', 'w') as f:
-                    json.dump(data, f, indent=4)
+import json
+with open('$BASE_CONFIG', 'r') as f:
+    data = json.load(f)
+data['alpha_mix'] = $a
+data['lambda_mmd_base'] = $l
+data['kappa'] = $k
+data['log_name'] = 'exp4_${EXP_ID}'
+with open('$TMP_CONFIG', 'w') as f:
+    json.dump(data, f, indent=4)
 "
             
-            # 执行训练（注意修改为你实际的 main.py 路径）
+            # 执行训练
             python main.py --config "$TMP_CONFIG"
             
             # 运行完删除临时配置文件
