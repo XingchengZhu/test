@@ -370,6 +370,10 @@ class FCS(BaseLearner):
 
             prog_bar.set_description(msg)
             logging.info(msg)
+        end_time = time.time()
+        avg_time = (end_time - start_time) / self._epoch_num
+        max_mem = torch.cuda.max_memory_allocated() / 1024 / 1024 # MB
+        logging.info(f"Average Time per Epoch: {avg_time:.2f}s, Max GPU Memory: {max_mem:.2f}MB")
 
     #########################################
     # ============= CVAE + 多核MMD + 动态调控整合 (RFF版) ============ #

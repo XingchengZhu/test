@@ -1,0 +1,18 @@
+# 指定 CUDA 11.8 版本的 PyTorch 仓库地址
+--index-url https://download.pytorch.org/whl/cu118
+
+# 核心深度学习框架
+torch==2.7.1
+torchvision==0.22.1
+torchaudio==2.7.1
+
+# 数值计算与科学计算
+numpy>=1.19.5
+scipy>=1.5.4
+
+# 数据处理与图像库
+Pillow>=8.2.0
+
+# 训练辅助工具
+tqdm>=4.61.0
+matplotlib>=3.3.4
