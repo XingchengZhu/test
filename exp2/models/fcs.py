@@ -7,7 +7,7 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 import os
 from scipy.spatial.distance import cdist
-
+import time
 from models.base import BaseLearner
 from utils.inc_net import FCSNet
 from utils.toolkit import count_parameters, tensor2numpy

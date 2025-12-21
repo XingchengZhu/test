@@ -6,7 +6,7 @@
     "init_cls": 50,
     "increment": 10,
     "model_name": "fcs",
-    "convnet_type": "resnet18_cbam",
+    "convnet_type": "vit_base",
     "device": ["0"],
     "seed": [1993],
     "lambda_fkd": 0.3,
