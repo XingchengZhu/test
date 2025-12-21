@@ -370,6 +370,9 @@ class FCS(BaseLearner):
 
             prog_bar.set_description(msg)
             logging.info(msg)
+            avg_time = (time.time() - start_time) / self._current_epoch
+            max_mem = torch.cuda.max_memory_allocated() / 1024 / 1024 # MB
+            logging.info(f"Little Epoch Average Time per Epoch: {avg_time:.2f}s, Max GPU Memory: {max_mem:.2f}MB")
         end_time = time.time()
         avg_time = (end_time - start_time) / self._epoch_num
         max_mem = torch.cuda.max_memory_allocated() / 1024 / 1024 # MB
