@@ -307,7 +307,7 @@ class FCS(BaseLearner):
         start_time = time.time()
         prog_bar = tqdm(range(self._epoch_num))
         for _, epoch_idx in enumerate(prog_bar):
-            self._current_epoch = epoch_idx
+            self._current_epoch = epoch_idx + 1
             self._network.train()
             losses_sum = 0.
             losses_dict = {

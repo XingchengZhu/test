@@ -24,12 +24,25 @@ class ViTProxy(nn.Module):
     def __init__(self, vit_model):
         super().__init__()
         self.vit = vit_model
-        self.out_dim = vit_model.out_dim
+        self.out_dim = vit_model.embed_dim
 
     def forward(self, x):
-        # timm 的 ViT 在 num_classes=0 时直接返回特征向量 [B, embed_dim]
-        features = self.vit(x)
-        return {"features": features}
+        # 使用 forward_features 获取特征
+        # 对于 32x32, patch_size=4, feat 的形状通常是 [B, 65, D] (1 cls token + 64 patch tokens)
+        feat = self.vit.forward_features(x)
+        
+        # 根据模型配置提取全局特征向量
+        if hasattr(self.vit, 'global_pool') and self.vit.global_pool == 'avg':
+            # 如果配置了平均池化，则对 patch tokens 取平均
+            features = feat[:, self.vit.num_prefix_tokens:].mean(dim=1)
+        else:
+            # 默认取 [CLS] token (索引为 0)
+            features = feat[:, 0]
+
+        return {
+            "features": features, 
+            "fmaps": [feat] # 模拟卷积层的特征图，方便后续可能的知识蒸馏（FKD）扩展
+        }
 
 class CombinedCVAE(nn.Module):
     def __init__(self, feature_dim, num_classes, latent_dim=128, hidden_dims=[512, 256], dropout_prob=0.1):
@@ -143,20 +156,26 @@ def get_convnet(args, pretrained=False):
     elif name == "resnet50_cbam":
         return resnet50_cbam(pretrained=pretrained, args=args)
     elif name == "vit_tiny":
+        # 使用 vit_tiny_patch16_224 的基础架构 (embed_dim=192, depth=12, num_heads=3)
+        # 通过参数覆盖将其适配为 32x32 输入和 patch_size=4
         model = timm.create_model(
-            'vit_tiny_patch4_32',
-            pretrained=False,
+            'vit_tiny_patch16_224',
+            pretrained=pretrained, # 如果有预训练需求可以传 True，但 32x32 建议从零训练
             num_classes=0,
-            img_size=32
+            img_size=32,
+            patch_size=4
         )
         model.out_dim = model.embed_dim 
         return ViTProxy(model)
+        
     elif name == "vit_small":
+        # 使用 vit_small_patch16_224 的基础架构 (embed_dim=384, depth=12, num_heads=6)
         model = timm.create_model(
-            'vit_small_patch4_32',
-            pretrained=False,
+            'vit_small_patch16_224',
+            pretrained=pretrained,
             num_classes=0,
-            img_size=32
+            img_size=32,
+            patch_size=4
         )
         model.out_dim = model.embed_dim 
         return ViTProxy(model)
