@@ -4,7 +4,7 @@ from utils.toolkit import split_images_labels
 import os 
 import sys
 
-data_root = '../datasets'
+data_root = '../'
 
 class iData(object):
     train_trsf = []

@@ -8,7 +8,7 @@
     "model_name": "fcs",
     "convnet_type": "resnet18_cbam",
     "device": ["0"],
-    "seed": [2025],
+    "seed": [1993],
     "lambda_fkd":10,
     "ckpt_num": 0,
     "ckpt_path": "",

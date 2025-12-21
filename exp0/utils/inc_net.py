@@ -18,8 +18,6 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-import timm
-
 class CombinedCVAE(nn.Module):
     def __init__(self, feature_dim, num_classes, latent_dim=128, hidden_dims=[512, 256], dropout_prob=0.1):
         """
@@ -131,10 +129,6 @@ def get_convnet(args, pretrained=False):
         return resnet34_cbam(pretrained=pretrained, args=args)
     elif name == "resnet50_cbam":
         return resnet50_cbam(pretrained=pretrained, args=args)
-    elif name == "vit_base":
-        model = timm.create_model('vit_base_patch16_224', pretrained=pretrained, num_classes=100)
-        model.out_dim = 768
-        return model
     else:
         raise NotImplementedError("Unknown type {}".format(name))
 

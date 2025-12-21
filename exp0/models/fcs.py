@@ -425,10 +425,7 @@ class FCS(BaseLearner):
         # 2) 多核 MMD 正则部分，使用 RFF 近似高斯核
         lambda_mmd_base = self.args.get("lambda_mmd_base", 50.0)
         factor = 1.0 - float(self._current_epoch)/(self._epoch_num + 1e-6)
-        
-        # weight_mmd = lambda_mmd_base * max(factor, 0.)
-        kappa = self.args.get("kappa", 0.1)
-        weight_mmd = lambda_mmd_base * max(factor, kappa)
+        weight_mmd = lambda_mmd_base * max(factor, 0.)
 
         x_mmd = features
         y_mmd = features_old
@@ -537,10 +534,7 @@ class FCS(BaseLearner):
             perm_inputs = perm_inputs[mask]
             perm_targets = perm_targets[mask]
 
-            # lams = np.random.beta(alpha, alpha, sum(mask))
-            alpha_val = self.args.get("alpha_mix", 20.0)
-            lams = np.random.beta(alpha_val, alpha_val, sum(mask))
-
+            lams = np.random.beta(alpha, alpha, sum(mask))
             lams = np.where((lams < 0.4) | (lams > 0.6), 0.5, lams)
             lams = torch.from_numpy(lams).float().to(self._device)[:, None, None, None]
 
