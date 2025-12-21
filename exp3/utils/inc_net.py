@@ -142,25 +142,23 @@ def get_convnet(args, pretrained=False):
         return resnet34_cbam(pretrained=pretrained, args=args)
     elif name == "resnet50_cbam":
         return resnet50_cbam(pretrained=pretrained, args=args)
-    elif name == "vit_base":
-        try:
-            model = timm.create_model(
-                'vit_tiny_patch2_32',
-                pretrained=pretrained, 
-                num_classes=0, # 注意：这里必须设为 0，因为 backbone 只负责提取特征
-                img_size=32
-            )
-            model.out_dim = model.embed_dim 
-        except:
-            model = timm.create_model(
-                'vit_base_patch16_224', 
-                pretrained=pretrained, 
-                num_classes=0, # 同上
-                img_size=32, 
-                patch_size=2
-            )
-            model.out_dim = 768
-        
+    elif name == "vit_tiny":
+        model = timm.create_model(
+            'vit_tiny_patch4_32',
+            pretrained=False,
+            num_classes=0,
+            img_size=32
+        )
+        model.out_dim = model.embed_dim 
+        return ViTProxy(model)
+    elif name == "vit_small":
+        model = timm.create_model(
+            'vit_small_patch4_32',
+            pretrained=False,
+            num_classes=0,
+            img_size=32
+        )
+        model.out_dim = model.embed_dim 
         return ViTProxy(model)
     else:
         raise NotImplementedError("Unknown type {}".format(name))
