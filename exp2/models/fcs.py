@@ -304,6 +304,7 @@ class FCS(BaseLearner):
             self._radius = np.sqrt(np.mean(self._radiuses))
 
     def _train_function(self, train_loader, test_loader, optimizer, scheduler):
+        start_time = time.time()
         prog_bar = tqdm(range(self._epoch_num))
         for _, epoch_idx in enumerate(prog_bar):
             self._current_epoch = epoch_idx
