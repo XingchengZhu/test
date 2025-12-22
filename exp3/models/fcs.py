@@ -496,15 +496,17 @@ class FCS(BaseLearner):
             "loss_mmd": loss_mmd
         }
         return logits, losses_all
-
+        
     def l2loss(self, inputs, targets, mean=True):
+        # 添加 1e-8 确保开方内部不为 0
+        eps = 1e-8
         if mean:
-            delta = torch.sqrt(torch.sum((inputs - targets)**2, dim=-1))
+            delta = torch.sqrt(torch.sum((inputs - targets)**2, dim=-1) + eps)
             return torch.mean(delta)
         else:
-            delta = torch.sqrt(torch.sum((inputs - targets)**2))
+            delta = torch.sqrt(torch.sum((inputs - targets)**2) + eps)
             return delta
-
+    
     @torch.no_grad()
     def _copy_key_encoder(self):
         """Momentum update of the key encoder"""
