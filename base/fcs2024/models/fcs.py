@@ -236,7 +236,7 @@ class FCS(BaseLearner):
                     self._cur_task, epoch+1, self._epoch_num, losses/len(train_loader), losses_clf/len(train_loader), losses_fkd/len(train_loader), losses_proto/len(train_loader), losses_transfer/len(train_loader), losses_contrast/len(train_loader), train_acc, test_acc)
             prog_bar.set_description(info)
             logging.info(info)
-            avg_time = (time.time() - start_time) / epoch + 1
+            avg_time = (time.time() - start_time) / (epoch + 1)
             max_mem = torch.cuda.max_memory_allocated() / 1024 / 1024 # MB
             logging.info(f"Little Epoch Average Time per Epoch: {avg_time:.2f}s, Max GPU Memory: {max_mem:.2f}MB")
         end_time = time.time()

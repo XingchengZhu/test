@@ -4,7 +4,7 @@ from utils.toolkit import split_images_labels
 import os 
 import sys
 
-data_root = '/data/dataset/liqiwei'
+data_root = '../..'
 
 class iData(object):
     train_trsf = []
