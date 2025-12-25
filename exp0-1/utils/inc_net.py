@@ -215,7 +215,7 @@ class CGRIncrementalNet(BaseNet):
             self._gradcam_hooks[0] = self.convnet.last_conv.register_backward_hook(backward_hook)
             self._gradcam_hooks[1] = self.convnet.last_conv.register_forward_hook(forward_hook)
 
-class CGRNet(IncrementalNet):
+class CGRNet(CGRIncrementalNet):
 
     def __init__(self, args, pretrained, gradcam=False):
         super().__init__(args, pretrained, gradcam)
