@@ -234,7 +234,7 @@ class FCS(BaseLearner):
                 test_acc = self._compute_accuracy(self._network, test_loader)
                 info = 'Task {}, Epoch {}/{} => Loss {:.3f}, Loss_clf {:.3f}, Loss_fkd {:.3f}, Loss_proto {:.3f}, Loss_transfer {:.3f}, Loss_contrast {:.3f}, Train_accy {:.2f}, Test_accy {:.2f}'.format(
                     self._cur_task, epoch+1, self._epoch_num, losses/len(train_loader), losses_clf/len(train_loader), losses_fkd/len(train_loader), losses_proto/len(train_loader), losses_transfer/len(train_loader), losses_contrast/len(train_loader), train_acc, test_acc)
-            prog_bar.set_description(info)
+            prog_bar.set_description(info) 
             logging.info(info)
             avg_time = (time.time() - start_time) / (epoch + 1)
             max_mem = torch.cuda.max_memory_allocated() / 1024 / 1024 # MB

@@ -13,7 +13,7 @@ def ewc_pmnist(override_args=None):
     https://www.pnas.org/content/114/13/3521
 
     Results are below the original paper, which scores around 94%.
-    """
+    """ 
     args = create_default_args({'cuda': 0, 'ewc_lambda': 1, 'hidden_size': 512,
                                 'hidden_layers': 1, 'epochs': 10, 'dropout': 0,
                                 'ewc_mode': 'separate', 'ewc_decay': None,
